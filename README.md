@@ -47,13 +47,13 @@ npm install -g https://mirrors.cloud.tencent.com/npm/@anthropic-ai/claude-code/-
 
 本项目以 `src/` 为核心，高度还原了原始代码组织：
 
-- 📂 **`src/entrypoints/`** - CLI 入口与初始化逻辑
-- 📂 **`src/commands/`** - 强大的命令系统 (`login`, `mcp`, `review`, `tasks` 等)
-- 📂 **`src/components/`** - 基于 **React + Ink** 的终端 UI 组件
-- 📂 **`src/services/`** - 核心业务逻辑 (策略、同步、远程能力等)
-- 📂 **`src/hooks/`** - 交互式终端状态管理
-- 📂 **`src/utils/`** - 认证、文件操作、进程管理等工具函数
-- 📂 **`src/ink/`** - 定制的终端渲染基础设施
+- **`src/entrypoints/`** - CLI 入口与初始化逻辑
+- **`src/commands/`** - 强大的命令系统 (`login`, `mcp`, `review`, `tasks` 等)
+- **`src/components/`** - 基于 **React + Ink** 的终端 UI 组件
+- **`src/services/`** - 核心业务逻辑 (策略、同步、远程能力等)
+- **`src/hooks/`** - 交互式终端状态管理
+- **`src/utils/`** - 认证、文件操作、进程管理等工具函数
+- **`src/ink/`** - 定制的终端渲染基础设施
 
 ---
 
@@ -61,10 +61,10 @@ npm install -g https://mirrors.cloud.tencent.com/npm/@anthropic-ai/claude-code/-
 
 从还原的代码中，我们可以深入探索以下核心设计：
 
-- 🛠️ **命令装载机制**：支持内建命令、动态 skills、插件及 MCP 命令的混合装载。
-- 🎨 **终端 UI 艺术**：如何利用 React 组件在终端中构建复杂的交互界面。
-- 🔗 **MCP 深度集成**：Model Context Protocol 在 CLI 中的具体实现与应用。
-- 🚦 **Feature Flags**：源码中随处可见的特性裁剪与构建期控制逻辑。
+- **命令装载机制**：支持内建命令、动态 skills、插件及 MCP 命令的混合装载。
+- **终端 UI 艺术**：如何利用 React 组件在终端中构建复杂的交互界面。
+- **MCP 深度集成**：Model Context Protocol 在 CLI 中的具体实现与应用。
+- **Feature Flags**：源码中随处可见的特性裁剪与构建期控制逻辑。
 
 ---
 
