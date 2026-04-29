@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/ponponon-claude-code-src-badge.png)](https://mseep.ai/app/ponponon-claude-code-src)
+
 # Claude Code 2.1.88 Source Recovery
 
 <p align="center">
