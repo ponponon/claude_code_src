@@ -6,6 +6,7 @@ import { getCanonicalName } from './model/model.js'
 import { get3PModelCapabilityOverride } from './model/modelSupportOverrides.js'
 import { getAPIProvider } from './model/providers.js'
 import { getSettingsWithErrors } from './settings/settings.js'
+import { MINIMAX_MODEL_CONFIGS } from './model/configs.js'
 
 export type ThinkingConfig =
   | { type: 'adaptive' }
@@ -101,6 +102,15 @@ export function modelSupportsThinking(model: string): boolean {
   // launch DRI and research. This can greatly affect model quality and bashing.
   const canonical = getCanonicalName(model)
   const provider = getAPIProvider()
+  if (provider === 'minimax') {
+    const normalizedModel = model
+      .replace(/\[1m\]$/i, '')
+      .toLowerCase()
+    return (
+      normalizedModel === MINIMAX_MODEL_CONFIGS.m3.toLowerCase() ||
+      normalizedModel === MINIMAX_MODEL_CONFIGS.m27.toLowerCase()
+    )
+  }
   // 1P and Foundry: all Claude 4+ models (including Haiku 4.5)
   if (provider === 'foundry' || provider === 'firstParty') {
     return !canonical.includes('claude-3-')
@@ -116,6 +126,13 @@ export function modelSupportsAdaptiveThinking(model: string): boolean {
     return supported3P
   }
   const canonical = getCanonicalName(model)
+  const provider = getAPIProvider()
+  if (provider === 'minimax') {
+    const normalizedModel = model
+      .replace(/\[1m\]$/i, '')
+      .toLowerCase()
+    return normalizedModel === MINIMAX_MODEL_CONFIGS.m3.toLowerCase()
+  }
   // Supported by a subset of Claude 4 models
   if (canonical.includes('opus-4-6') || canonical.includes('sonnet-4-6')) {
     return true
@@ -139,7 +156,6 @@ export function modelSupportsAdaptiveThinking(model: string): boolean {
   // Default to true for unknown model strings on 1P and Foundry (because Foundry
   // is a proxy). Do not default to true for other 3P as they have different formats
   // for their model strings.
-  const provider = getAPIProvider()
   return provider === 'firstParty' || provider === 'foundry'
 }
 

@@ -20,6 +20,7 @@ import {
 } from '../context.js'
 import { isEnvTruthy } from '../envUtils.js'
 import { getModelStrings, resolveOverriddenModel } from './modelStrings.js'
+import { MINIMAX_MODEL_CONFIGS } from './configs.js'
 import { formatModelPricing, getOpus46CostTier } from '../modelCost.js'
 import { getSettings_DEPRECATED } from '../settings/settings.js'
 import type { PermissionMode } from '../permissions/PermissionMode.js'
@@ -348,6 +349,12 @@ export function renderModelSetting(setting: ModelName | ModelAlias): string {
  */
 export function getPublicModelDisplayName(model: ModelName): string | null {
   switch (model) {
+    case MINIMAX_MODEL_CONFIGS.m3:
+      return 'MiniMax M3'
+    case MINIMAX_MODEL_CONFIGS.m3 + '[1m]':
+      return 'MiniMax M3 (1M context)'
+    case MINIMAX_MODEL_CONFIGS.m27:
+      return 'MiniMax M2.7'
     case getModelStrings().opus46:
       return 'Opus 4.6'
     case getModelStrings().opus46 + '[1m]':
@@ -575,6 +582,14 @@ export function getMarketingNameForModel(modelId: string): string | undefined {
 
   const has1m = modelId.toLowerCase().includes('[1m]')
   const canonical = getCanonicalName(modelId)
+  const normalizedModel = normalizeModelStringForAPI(modelId).toLowerCase()
+
+  if (normalizedModel === MINIMAX_MODEL_CONFIGS.m3.toLowerCase()) {
+    return has1m ? 'MiniMax M3 (with 1M context)' : 'MiniMax M3'
+  }
+  if (normalizedModel === MINIMAX_MODEL_CONFIGS.m27.toLowerCase()) {
+    return 'MiniMax M2.7'
+  }
 
   if (canonical.includes('claude-opus-4-6')) {
     return has1m ? 'Opus 4.6 (with 1M context)' : 'Opus 4.6'

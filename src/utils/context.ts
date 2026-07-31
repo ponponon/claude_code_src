@@ -1,6 +1,7 @@
 // biome-ignore-all assist/source/organizeImports: ANT-ONLY import markers must not be reordered
 import { CONTEXT_1M_BETA_HEADER } from '../constants/betas.js'
 import { getGlobalConfig } from './config.js'
+import { MINIMAX_MODEL_CONFIGS } from './model/configs.js'
 import { isEnvTruthy } from './envUtils.js'
 import { getCanonicalName } from './model/model.js'
 import { getModelCapability } from './model/modelCapabilities.js'
@@ -69,6 +70,14 @@ export function getContextWindowForModel(
   // [1m] suffix — explicit client-side opt-in, respected over all detection
   if (has1mContext(model)) {
     return 1_000_000
+  }
+
+  const normalizedModel = model.toLowerCase()
+  if (normalizedModel === MINIMAX_MODEL_CONFIGS.m3.toLowerCase()) {
+    return 1_000_000
+  }
+  if (normalizedModel === MINIMAX_MODEL_CONFIGS.m27.toLowerCase()) {
+    return 204_800
   }
 
   const cap = getModelCapability(model)
