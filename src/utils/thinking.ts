@@ -107,6 +107,7 @@ export function modelSupportsThinking(model: string): boolean {
       .replace(/\[1m\]$/i, '')
       .toLowerCase()
     return (
+      normalizedModel === MINIMAX_MODEL_CONFIGS.flash.toLowerCase() ||
       normalizedModel === MINIMAX_MODEL_CONFIGS.m3.toLowerCase() ||
       normalizedModel === MINIMAX_MODEL_CONFIGS.m27.toLowerCase()
     )
@@ -131,7 +132,10 @@ export function modelSupportsAdaptiveThinking(model: string): boolean {
     const normalizedModel = model
       .replace(/\[1m\]$/i, '')
       .toLowerCase()
-    return normalizedModel === MINIMAX_MODEL_CONFIGS.m3.toLowerCase()
+    return (
+      normalizedModel === MINIMAX_MODEL_CONFIGS.flash.toLowerCase() ||
+      normalizedModel === MINIMAX_MODEL_CONFIGS.m3.toLowerCase()
+    )
   }
   // Supported by a subset of Claude 4 models
   if (canonical.includes('opus-4-6') || canonical.includes('sonnet-4-6')) {

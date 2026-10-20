@@ -10,6 +10,7 @@ export type APIProvider =
 
 const MINIMAX_ANTHROPIC_BASE_URLS = new Set([
   'https://api.minimax.io/anthropic',
+  'https://api.minimax.cn/anthropic',
   'https://api.minimaxi.com/anthropic',
 ])
 

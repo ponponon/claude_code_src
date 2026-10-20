@@ -349,6 +349,10 @@ export function renderModelSetting(setting: ModelName | ModelAlias): string {
  */
 export function getPublicModelDisplayName(model: ModelName): string | null {
   switch (model) {
+    case MINIMAX_MODEL_CONFIGS.flash:
+      return 'MiniMax M3.1 Flash'
+    case MINIMAX_MODEL_CONFIGS.flash + '[1m]':
+      return 'MiniMax M3.1 Flash (1M context)'
     case MINIMAX_MODEL_CONFIGS.m3:
       return 'MiniMax M3'
     case MINIMAX_MODEL_CONFIGS.m3 + '[1m]':
@@ -584,6 +588,9 @@ export function getMarketingNameForModel(modelId: string): string | undefined {
   const canonical = getCanonicalName(modelId)
   const normalizedModel = normalizeModelStringForAPI(modelId).toLowerCase()
 
+  if (normalizedModel === MINIMAX_MODEL_CONFIGS.flash.toLowerCase()) {
+    return has1m ? 'MiniMax M3.1 Flash (with 1M context)' : 'MiniMax M3.1 Flash'
+  }
   if (normalizedModel === MINIMAX_MODEL_CONFIGS.m3.toLowerCase()) {
     return has1m ? 'MiniMax M3 (with 1M context)' : 'MiniMax M3'
   }

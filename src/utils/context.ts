@@ -73,7 +73,10 @@ export function getContextWindowForModel(
   }
 
   const normalizedModel = model.toLowerCase()
-  if (normalizedModel === MINIMAX_MODEL_CONFIGS.m3.toLowerCase()) {
+  if (
+    normalizedModel === MINIMAX_MODEL_CONFIGS.flash.toLowerCase() ||
+    normalizedModel === MINIMAX_MODEL_CONFIGS.m3.toLowerCase()
+  ) {
     return 1_000_000
   }
   if (normalizedModel === MINIMAX_MODEL_CONFIGS.m27.toLowerCase()) {
@@ -173,7 +176,10 @@ export function getModelMaxOutputTokens(model: string): {
 
   const m = getCanonicalName(model)
 
-  if (m.includes('opus-4-6')) {
+  if (m === MINIMAX_MODEL_CONFIGS.flash.toLowerCase()) {
+    defaultTokens = MAX_OUTPUT_TOKENS_DEFAULT
+    upperLimit = 524_288
+  } else if (m.includes('opus-4-6')) {
     defaultTokens = 64_000
     upperLimit = 128_000
   } else if (m.includes('sonnet-4-6')) {

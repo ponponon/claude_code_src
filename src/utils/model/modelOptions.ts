@@ -271,14 +271,14 @@ function getMiniMaxModelOptions(): ModelOption[] {
   return [
     getDefaultOptionForUser(),
     {
+      value: MINIMAX_MODEL_CONFIGS.flash,
+      label: 'MiniMax M3.1 Flash',
+      description: 'MiniMax M3.1 Flash - 1M context - adaptive thinking',
+    },
+    {
       value: MINIMAX_MODEL_CONFIGS.m3,
       label: 'MiniMax M3',
       description: 'MiniMax M3 - 1M context - text, image, and video input',
-    },
-    {
-      value: MINIMAX_MODEL_CONFIGS.m27,
-      label: 'MiniMax M2.7',
-      description: 'MiniMax M2.7 - 204.8K context - text input',
     },
   ]
 }
@@ -499,6 +499,17 @@ export function getModelOptions(fastMode = false): ModelOption[] {
 
   // Append additional model options fetched during bootstrap
   for (const opt of getGlobalConfig().additionalModelOptionsCache ?? []) {
+    // Cached catalogs must not reintroduce retired MiniMax choices. Explicit
+    // custom and saved selections are added separately and remain available.
+    if (
+      typeof opt.value === 'string' &&
+      /^minimax-/i.test(opt.value) &&
+      ![MINIMAX_MODEL_CONFIGS.flash, MINIMAX_MODEL_CONFIGS.m3].some(
+        model => model.toLowerCase() === opt.value?.toLowerCase(),
+      )
+    ) {
+      continue
+    }
     if (!options.some(existing => existing.value === opt.value)) {
       options.push(opt)
     }

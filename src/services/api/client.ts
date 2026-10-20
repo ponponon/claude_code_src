@@ -1,5 +1,6 @@
 import Anthropic, { type ClientOptions } from '@anthropic-ai/sdk'
 import { randomUUID } from 'crypto'
+import { normalizeMiniMaxRequest } from './minimax.js'
 import type { GoogleAuth } from 'google-auth-library'
 import {
   checkAndRefreshOAuthTokenIfNeeded,
@@ -365,7 +366,14 @@ function buildFetch(
   // and unknown headers risk rejection by strict proxies (inc-4029 class).
   const injectClientRequestId =
     getAPIProvider() === 'firstParty' && isFirstPartyAnthropicBaseUrl()
+  const isMiniMax = getAPIProvider() === 'minimax'
   return (input, init) => {
+    if (
+      isMiniMax &&
+      new URL(input instanceof Request ? input.url : String(input)).pathname.endsWith('/v1/messages')
+    ) {
+      init = normalizeMiniMaxRequest(init)
+    }
     // eslint-disable-next-line eslint-plugin-n/no-unsupported-features/node-builtins
     const headers = new Headers(init?.headers)
     // Generate a client-side request ID so timeouts (which return no server
