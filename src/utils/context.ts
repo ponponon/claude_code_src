@@ -1,6 +1,7 @@
 // biome-ignore-all assist/source/organizeImports: ANT-ONLY import markers must not be reordered
 import { CONTEXT_1M_BETA_HEADER } from '../constants/betas.js'
 import { getGlobalConfig } from './config.js'
+import { MINIMAX_MODEL_CONFIGS } from './model/configs.js'
 import { isEnvTruthy } from './envUtils.js'
 import { getCanonicalName } from './model/model.js'
 import { getModelCapability } from './model/modelCapabilities.js'
@@ -69,6 +70,17 @@ export function getContextWindowForModel(
   // [1m] suffix — explicit client-side opt-in, respected over all detection
   if (has1mContext(model)) {
     return 1_000_000
+  }
+
+  const normalizedModel = model.toLowerCase()
+  if (
+    normalizedModel === MINIMAX_MODEL_CONFIGS.flash.toLowerCase() ||
+    normalizedModel === MINIMAX_MODEL_CONFIGS.m3.toLowerCase()
+  ) {
+    return 1_000_000
+  }
+  if (normalizedModel === MINIMAX_MODEL_CONFIGS.m27.toLowerCase()) {
+    return 204_800
   }
 
   const cap = getModelCapability(model)
@@ -164,7 +176,10 @@ export function getModelMaxOutputTokens(model: string): {
 
   const m = getCanonicalName(model)
 
-  if (m.includes('opus-4-6')) {
+  if (m === MINIMAX_MODEL_CONFIGS.flash.toLowerCase()) {
+    defaultTokens = MAX_OUTPUT_TOKENS_DEFAULT
+    upperLimit = 524_288
+  } else if (m.includes('opus-4-6')) {
     defaultTokens = 64_000
     upperLimit = 128_000
   } else if (m.includes('sonnet-4-6')) {

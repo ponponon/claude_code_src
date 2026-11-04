@@ -14,6 +14,7 @@ import {
 } from '../modelCost.js'
 import { getSettings_DEPRECATED } from '../settings/settings.js'
 import { checkOpus1mAccess, checkSonnet1mAccess } from './check1mAccess.js'
+import { MINIMAX_MODEL_CONFIGS } from './configs.js'
 import { getAPIProvider } from './providers.js'
 import { isModelAllowed } from './modelAllowlist.js'
 import {
@@ -266,6 +267,22 @@ function getOpusPlanOption(): ModelOption {
   }
 }
 
+function getMiniMaxModelOptions(): ModelOption[] {
+  return [
+    getDefaultOptionForUser(),
+    {
+      value: MINIMAX_MODEL_CONFIGS.flash,
+      label: 'MiniMax M3.1 Flash',
+      description: 'MiniMax M3.1 Flash - 1M context - adaptive thinking',
+    },
+    {
+      value: MINIMAX_MODEL_CONFIGS.m3,
+      label: 'MiniMax M3',
+      description: 'MiniMax M3 - 1M context - text, image, and video input',
+    },
+  ]
+}
+
 // @[MODEL LAUNCH]: Update the model picker lists below to include/reorder options for the new model.
 // Each user tier (ant, Max/Team Premium, Pro/Team Standard/Enterprise, PAYG 1P, PAYG 3P) has its own list.
 function getModelOptionsBase(fastMode = false): ModelOption[] {
@@ -285,6 +302,10 @@ function getModelOptionsBase(fastMode = false): ModelOption[] {
       getSonnet46_1MOption(),
       getHaiku45Option(),
     ]
+  }
+
+  if (getAPIProvider() === 'minimax') {
+    return getMiniMaxModelOptions()
   }
 
   if (isClaudeAISubscriber()) {
@@ -478,6 +499,17 @@ export function getModelOptions(fastMode = false): ModelOption[] {
 
   // Append additional model options fetched during bootstrap
   for (const opt of getGlobalConfig().additionalModelOptionsCache ?? []) {
+    // Cached catalogs must not reintroduce retired MiniMax choices. Explicit
+    // custom and saved selections are added separately and remain available.
+    if (
+      typeof opt.value === 'string' &&
+      /^minimax-/i.test(opt.value) &&
+      ![MINIMAX_MODEL_CONFIGS.flash, MINIMAX_MODEL_CONFIGS.m3].some(
+        model => model.toLowerCase() === opt.value?.toLowerCase(),
+      )
+    ) {
+      continue
+    }
     if (!options.some(existing => existing.value === opt.value)) {
       options.push(opt)
     }
